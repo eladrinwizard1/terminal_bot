@@ -11,6 +11,6 @@ def format_output(content: str, stdout: str = None, stderr: str = None) -> str:
     output += f"{stdout}\n"
     # TODO: fix this formatting
     if stderr is not None:
-        output += f"stderr: {stderr}\n"
+        output += f"stderr:\n {stderr}\n"
     output += "```"
     return output
