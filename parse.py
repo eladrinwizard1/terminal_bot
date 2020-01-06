@@ -2,6 +2,11 @@ from discord import Message
 import subprocess
 from lib import format_output
 import os
+from dotenv import load_dotenv
+import json
+
+load_dotenv()
+DATA = os.getenv("DATA")
 
 
 def change_directory(msg: Message) -> str:
@@ -24,17 +29,8 @@ def print_file(msg: Message) -> str:
     if len(message) < 2:
         return "Error: must pass file name to `cat`"
     extension = message[1].split(".")[-1]
-    # TODO: add more extensions and store this data elsewhere
-    extensions = {
-        "py": "Python",
-        "c": "C",
-        "c0": "C",
-        "c++": "C++",
-        "js": "JavaScript",
-        "json": "JavaScript",
-        "html": "HTML",
-        "md": "Markdown"
-    }
+    with open(f"{DATA}/extensions.json", "r") as f:
+        extensions = json.load(f)
     language = extensions.get(extension, "Bash")
     process = subprocess.run(msg.content[1:],
                              stdout=subprocess.PIPE,
