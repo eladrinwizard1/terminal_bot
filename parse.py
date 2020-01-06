@@ -19,9 +19,33 @@ def change_directory(msg: Message) -> str:
     return format_output(f"cd {message[1]} && ls", process.stdout)
 
 
+def print_file(msg: Message) -> str:
+    message = msg.content.split(" ")
+    if len(message) < 2:
+        return "Error: must pass file name to `cat`"
+    extension = message[1].split(".")[-1]
+    # TODO: add more extensions and store this data elsewhere
+    extensions = {
+        "py": "Python",
+        "c": "C",
+        "c0": "C",
+        "c++": "C++",
+        "js": "JavaScript",
+        "json": "JavaScript",
+        "html": "HTML",
+        "md": "Markdown"
+    }
+    language = extensions.get(extension, "Bash")
+    process = subprocess.run(msg.content[1:],
+                             stdout=subprocess.PIPE,
+                             universal_newlines=True,
+                             shell=True)
+    return format_output(f"cd {message[1]} && ls", process.stdout)
+
 # Dictionary of special functions to be called with !
 FUNCTIONS = {
-    "cd": change_directory
+    "cd": change_directory,
+    "cat": print_file
 }
 
 # Dictionary of special (direct message) functions to be called with !
