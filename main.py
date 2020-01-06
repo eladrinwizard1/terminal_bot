@@ -1,8 +1,7 @@
 import os
 import discord
 from dotenv import load_dotenv
-from parser import FUNCTIONS, DMFUNCTIONS, parse_message
-
+from parse import FUNCTIONS, DMFUNCTIONS, parse_message
 # load environment variables
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -40,17 +39,16 @@ async def on_message(message):
     if message.author == client.user:
         return
     elif type(message.channel) is discord.DMChannel:
-        fn = DMFUNCTIONS.get(message.content.split(" ")[0][1:].lower(),
-                             lambda x: "Error: no such command found")
+        fn = DMFUNCTIONS.get(message.content.split(" ")[0][1:].lower())
     elif message.channel not in CHANNELS:
         return
-    elif not message.content.startswith(PREFIX):
-        fn = parse_message
+    elif message.content.startswith(PREFIX):
+        fn = FUNCTIONS.get(message.content.split(" ")[0][1:].lower())
     else:
-        fn = DMFUNCTIONS.get(message.content.split(" ")[0][1:].lower(),
-                             lambda x: "Error: no such command found")
+        fn = parse_message
     if fn is not None:
         response = fn(message)
+        await message.delete()
         await message.channel.send(response)
     print(f"Message from {message.author}: {message.content}")
 

@@ -20,7 +20,8 @@ def parse_message(msg: Message) -> str:
     :param msg: The message to parse.
     :return: The result to send as a Discord message.
     """
-    process = subprocess.run(['echo', msg.content],
+    process = subprocess.run(msg.content,
                              stdout=subprocess.PIPE,
-                             universal_newlines=True)
-    return format_output(msg.content, process.stdout, process.stderr)
+                             universal_newlines=True,
+                             shell=True)
+    return format_output(process.args, process.stdout, process.stderr)
