@@ -40,7 +40,9 @@ def print_file(msg: Message) -> str:
                              stdout=subprocess.PIPE,
                              universal_newlines=True,
                              shell=True)
-    return format_output(f"cd {message[1]} && ls", process.stdout, language)
+    return format_output(process.args, process.stdout,
+                         process.stderr, language)
+
 
 # Dictionary of special functions to be called with !
 FUNCTIONS = {
