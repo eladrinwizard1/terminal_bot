@@ -29,10 +29,11 @@ def _split(content: str) -> List[str]:
             lines.append(line[:MESSAGE_LIMIT])
             lines.append(line[MESSAGE_LIMIT:])
         elif len(current) + len(line) < MESSAGE_LIMIT:
-            current += line
+            current += f"\n{line}"
         else:
-            output.append(current)
+            output.append(f"{current}\n")
             current = line
+    output.append(current)
     return output
 
 
