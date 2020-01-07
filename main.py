@@ -17,6 +17,7 @@ async def on_ready():
     """
     Runs when the bot finishes initialization.
     """
+    os.chdir(os.path.expanduser("~"))
     print(f'{client.user} has connected to Discord!')
     global CHANNELS
     for guild in client.guilds:
