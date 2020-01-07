@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import json
 
 load_dotenv()
-DATA = os.getenv("DATA")
+DATA = os.getenv("TERMINAL_BOT_DATA")
 
 
 def change_directory(msg: Message) -> str:

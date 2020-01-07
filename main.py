@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from parse import FUNCTIONS, DMFUNCTIONS, parse_message
 # load environment variables
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-PREFIX = os.getenv("PREFIX")
+TOKEN = os.getenv('TERMINAL_BOT_TOKEN')
+PREFIX = os.getenv("TERMINAL_BOT_PREFIX")
 
 client = discord.Client()
 
