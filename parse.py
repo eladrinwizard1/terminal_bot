@@ -23,11 +23,11 @@ def change_directory(msg: Message) -> str:
         )
     except OSError:
         return f"Error changing to path `{message[1]}`"
-    process = subprocess.run("ls",
+    process = subprocess.run("ls -p",
                              stdout=subprocess.PIPE,
                              universal_newlines=True,
                              shell=True)
-    return format_output(f"cd {message[1]} && ls", process.stdout)
+    return format_output(f"cd {message[1]} && ls -p", process.stdout)
 
 
 def print_file(msg: Message) -> str:
