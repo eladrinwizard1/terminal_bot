@@ -48,9 +48,10 @@ async def on_message(message):
     else:
         fn = parse_message
     if fn is not None:
-        response = fn(message)
+        responses = fn(message)
         await message.delete()
-        await message.channel.send(response)
+        for response in responses:
+            await message.channel.send(response)
     print(f"Message from {message.author}: {message.content}")
 
 client.run(TOKEN)

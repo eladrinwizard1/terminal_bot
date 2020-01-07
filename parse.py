@@ -1,18 +1,21 @@
-from discord import Message
-import subprocess
-from lib import format_output
-import os
-from dotenv import load_dotenv
 import json
+import os
+import subprocess
+from typing import List
+
+from discord import Message
+from dotenv import load_dotenv
+
+from lib import format_output
 
 load_dotenv()
 DATA = os.getenv("TERMINAL_BOT_DATA")
 
 
-def change_directory(msg: Message) -> str:
+def change_directory(msg: Message) -> List[str]:
     message = msg.content.split(" ")
     if len(message) < 2:
-        return "Error: must pass path to `cd`"
+        return ["Error: must pass path to `cd`"]
     try:
         os.chdir(
             os.path.expanduser(
@@ -22,7 +25,7 @@ def change_directory(msg: Message) -> str:
             )
         )
     except OSError:
-        return f"Error changing to path `{message[1]}`"
+        return [f"Error changing to path `{message[1]}`"]
     process = subprocess.run("ls -p",
                              stdout=subprocess.PIPE,
                              universal_newlines=True,
@@ -30,10 +33,10 @@ def change_directory(msg: Message) -> str:
     return format_output(f"cd {message[1]} && ls -p", process.stdout)
 
 
-def print_file(msg: Message) -> str:
+def print_file(msg: Message) -> List[str]:
     message = msg.content.split(" ")
     if len(message) < 2:
-        return "Error: must pass file name to `cat`"
+        return ["Error: must pass file name to `cat`"]
     extension = message[1].split(".")[-1]
     with open(f"{DATA}/extensions.json", "r") as f:
         extensions = json.load(f)
@@ -59,7 +62,7 @@ DMFUNCTIONS = {
 
 
 # General parsing function
-def parse_message(msg: Message) -> str:
+def parse_message(msg: Message) -> List[str]:
     """
     Parses a non-prefixed message from discord and returns result.
     :param msg: The message to parse.
