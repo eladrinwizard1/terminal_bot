@@ -14,7 +14,13 @@ def change_directory(msg: Message) -> str:
     if len(message) < 2:
         return "Error: must pass path to `cd`"
     try:
-        os.chdir(message[1])
+        os.chdir(
+            os.path.expanduser(
+                os.path.expandvars(
+                    message[1]
+                )
+            )
+        )
     except OSError:
         return f"Error changing to path `{message[1]}`"
     process = subprocess.run("ls",
