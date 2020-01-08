@@ -1,15 +1,15 @@
 import os
+from typing import List
+
 import discord
-from dotenv import load_dotenv
-from parse import FUNCTIONS, DMFUNCTIONS, parse_message
+
+from parse import DMFUNCTIONS, FUNCTIONS, parse_message
+
 # load environment variables
-load_dotenv()
 TOKEN = os.getenv('TERMINAL_BOT_TOKEN')
 PREFIX = os.getenv("TERMINAL_BOT_PREFIX")
 
 client = discord.Client()
-
-CHANNELS = []  # the channels on which to operate
 
 
 @client.event
@@ -19,32 +19,32 @@ async def on_ready():
     """
     os.chdir(os.path.expanduser("~"))
     print(f'{client.user} has connected to Discord!')
-    global CHANNELS
+    channels = []
     for guild in client.guilds:
-        CHANNELS += [channel for channel in guild.channels
+        channels += [channel for channel in guild.channels
                      if "terminal" in str(channel)]
-    for channel in CHANNELS:
+    for channel in channels:
         await channel.send(
             f"terminal-bot is active on this channel with prefix {PREFIX}"
         )
 
 
-# parse Discord messages
-
+# Parse messages
 
 @client.event
 async def on_message(message):
     """
     Runs each time a message is sent.
     """
+    cmd = message.content.split(" ")[0][1:].lower()
     if message.author == client.user:
         return
     elif type(message.channel) is discord.DMChannel:
-        fn = DMFUNCTIONS.get(message.content.split(" ")[0][1:].lower())
-    elif message.channel not in CHANNELS:
+        fn = DMFUNCTIONS.get(cmd)
+    elif "terminal" not in str(message.channel):
         return
     elif message.content.startswith(PREFIX):
-        fn = FUNCTIONS.get(message.content.split(" ")[0][1:].lower())
+        fn = FUNCTIONS.get(cmd)
     else:
         fn = parse_message
     if fn is not None:

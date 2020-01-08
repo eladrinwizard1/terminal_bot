@@ -49,10 +49,25 @@ def print_file(msg: Message) -> List[str]:
                          process.stderr, language)
 
 
+def create_channel(msg: Message) -> List[str]:
+    channels = [c.name for c in msg.guild.channels]
+    try:
+        category = next(c for c in msg.guild.categories
+                        if c.name == "terminals")
+    except StopIteration:
+        category = await msg.guild.create_category("terminals")
+    count = 1
+    while f"terminal-{count}" in channels:
+        count += 1
+    channel = await category.create_text_channel(f"terminal-{count}")
+    return [channel.mention]
+
+
 # Dictionary of special functions to be called with !
 FUNCTIONS = {
     "cd": change_directory,
-    "cat": print_file
+    "cat": print_file,
+    "create": create_channel
 }
 
 # Dictionary of special (direct message) functions to be called with !
