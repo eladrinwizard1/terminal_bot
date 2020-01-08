@@ -21,7 +21,7 @@ async def on_ready():
     print(f'{client.user} has connected to Discord!')
     channels = []
     for guild in client.guilds:
-        channels += [channel for channel in guild.channels
+        channels += [channel for channel in guild.text_channels
                      if "terminal" in str(channel)]
         jtools.write_to_file(f"{DATA}/dirs.json",
                              {f"{str(guild)}/{str(channel)}":
