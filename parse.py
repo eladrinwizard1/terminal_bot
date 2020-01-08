@@ -7,6 +7,7 @@ from discord import Message
 from dotenv import load_dotenv
 
 from lib import format_output
+import json_tools as jtools
 
 load_dotenv()
 DATA = os.getenv("TERMINAL_BOT_DATA")
@@ -26,6 +27,9 @@ def change_directory(msg: Message) -> List[str]:
         )
     except OSError:
         return [f"Error changing to path `{message[1]}`"]
+    jtools.set_in_file(f"{DATA}/dirs.json",
+                       f"{str(msg.guild)}/{str(msg.channel)}",
+                       os.getcwd())
     process = subprocess.run("ls -p",
                              stdout=subprocess.PIPE,
                              universal_newlines=True,
@@ -60,11 +64,16 @@ async def create_channel(msg: Message) -> List[str]:
     while f"terminal-{count}" in channels:
         count += 1
     channel = await category.create_text_channel(f"terminal-{count}")
+    jtools.set_in_file(f"{DATA}/dirs.json",
+                       f"{str(channel.guild)}/{str(channel)}",
+                       os.getcwd())
     return [channel.mention]
 
 
 async def delete_channel(msg: Message) -> List[str]:
-    pass
+    if "terminal-" in msg.channel.name:
+        await msg.channel.delete()
+    return []
 
 
 # Dictionary of special functions to be called with !
