@@ -61,7 +61,10 @@ async def on_message(message):
         else:
             fn = parse_message
             responses = fn(message)
-        await message.delete()
+        try:
+            await message.delete()
+        except discord.errors.NotFound:
+            pass
         for response in responses:
             await message.channel.send(response)
     print(f"Message from {message.author}: {message.content}")
