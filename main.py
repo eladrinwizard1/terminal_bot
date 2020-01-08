@@ -3,7 +3,7 @@ from typing import List
 
 import discord
 
-from parse import DMFUNCTIONS, FUNCTIONS, parse_message
+from parse import FUNCTIONS, ASYNC_FUNCTIONS, parse_message
 
 # load environment variables
 TOKEN = os.getenv('TERMINAL_BOT_TOKEN')
@@ -39,16 +39,19 @@ async def on_message(message):
     cmd = message.content.split(" ")[0][1:].lower()
     if message.author == client.user:
         return
-    elif type(message.channel) is discord.DMChannel:
-        fn = DMFUNCTIONS.get(cmd)
-    elif "terminal" not in str(message.channel):
-        return
-    elif message.content.startswith(PREFIX):
-        fn = FUNCTIONS.get(cmd)
-    else:
-        fn = parse_message
-    if fn is not None:
-        responses = fn(message)
+    if type(message.channel) is discord.DMChannel or \
+            "terminal" in str(message.channel):
+        if message.content.startswith(PREFIX):
+            fn = ASYNC_FUNCTIONS.get(cmd)
+            if fn is None:
+                fn = FUNCTIONS.get(cmd) or \
+                     (lambda x: ["Error, command not found"])
+                responses = fn(message)
+            else:
+                responses = await fn(message)
+        else:
+            fn = parse_message
+            responses = fn(message)
         await message.delete()
         for response in responses:
             await message.channel.send(response)

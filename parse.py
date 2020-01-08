@@ -49,7 +49,7 @@ def print_file(msg: Message) -> List[str]:
                          process.stderr, language)
 
 
-def create_channel(msg: Message) -> List[str]:
+async def create_channel(msg: Message) -> List[str]:
     channels = [c.name for c in msg.guild.channels]
     try:
         category = next(c for c in msg.guild.categories
@@ -63,16 +63,21 @@ def create_channel(msg: Message) -> List[str]:
     return [channel.mention]
 
 
+async def delete_channel(msg: Message) -> List[str]:
+    pass
+
+
 # Dictionary of special functions to be called with !
 FUNCTIONS = {
     "cd": change_directory,
-    "cat": print_file,
-    "create": create_channel
+    "cat": print_file
 }
 
-# Dictionary of special (direct message) functions to be called with !
-DMFUNCTIONS = {
 
+# Dictionary of async functions to be called with !
+ASYNC_FUNCTIONS = {
+    "start": create_channel,
+    "end": delete_channel
 }
 
 
